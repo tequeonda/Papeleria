@@ -259,6 +259,34 @@ padding:9px 18px;z-index:9999;font-family:'Barlow Condensed',sans-serif;font-siz
 font-weight:700;letter-spacing:.09em;text-transform:uppercase;transition:transform .28s;white-space:nowrap;}
 #toast.on{transform:translateX(-50%) translateY(0);}
 
+/* ── SITIOS ── */
+.hsite{font-family:'Barlow Condensed',sans-serif;font-size:.6rem;font-weight:700;
+letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+background:rgba(255,199,44,.14);border-radius:5px;padding:2px 7px;white-space:nowrap;}
+.sitecard{display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+background:var(--card);border:1.5px solid var(--border);border-left:4px solid var(--border);
+border-radius:11px;padding:13px 14px;margin-bottom:9px;cursor:pointer;}
+.sitecard.pend{border-left-color:var(--orange);}
+.sitecard.done{border-left-color:var(--green);}
+.sitecard.none{opacity:.6;}
+.sitecard .sico{font-size:24px;flex-shrink:0;}
+.sitecard .sbody{flex:1;min-width:0;}
+.sitecard .sname{font-family:'Barlow Condensed',sans-serif;font-size:1rem;font-weight:800;
+letter-spacing:.04em;text-transform:uppercase;}
+.sitecard .smeta{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.sitecard .schev{color:#c9c7bf;font-size:15px;flex-shrink:0;}
+.sitecard .spill{font-family:'Barlow Condensed',sans-serif;font-size:.62rem;font-weight:700;
+letter-spacing:.07em;text-transform:uppercase;border-radius:4px;padding:2px 7px;display:inline-block;margin-top:3px;}
+.spill.warn{background:rgba(249,115,22,.14);color:var(--orange);}
+.spill.ok{background:rgba(34,197,94,.14);color:var(--green);}
+.spill.na{background:var(--bg);color:var(--muted);}
+.scopebtns{display:flex;gap:5px;}
+.scb{flex:1;padding:6px 3px;border-radius:6px;cursor:pointer;border:1.5px solid var(--border);
+background:transparent;color:#bbb;font-size:11px;font-weight:700;font-family:'DM Sans',sans-serif;}
+.scb.on{border-color:var(--accent);background:rgba(255,199,44,.12);color:var(--accentD);}
+.sitetag{font-family:'Barlow Condensed',sans-serif;font-size:.58rem;font-weight:700;
+letter-spacing:.08em;text-transform:uppercase;border-radius:4px;padding:2px 6px;
+background:var(--bg);color:var(--muted);display:inline-block;}
 @media(max-width:560px){.fgrid{grid-template-columns:1fr}.fg.full{grid-column:1}}
 </style>
 </head>
@@ -271,6 +299,14 @@ font-weight:700;letter-spacing:.09em;text-transform:uppercase;transition:transfo
    CONFIG
 ══════════════════════════════════════════════════════════ */
 var WA_PROVEEDOR = "541171909039";   // proveedor Papelera del Río
+
+/* ─── SINCRONIZACIÓN AUTOMÁTICA ───────────────────────────
+   Pegá acá la URL de tu Apps Script (termina en /exec).
+   Con esto los 3 lugares comparten catálogo, reportes y
+   facturas sin configurar nada en cada dispositivo.
+   Dejalo vacío para trabajar solo con WhatsApp.          */
+var SYNC_URL = "https://script.google.com/macros/s/AKfycbxgNZv6MUm7vsmQR0JinzbgNhcOBSuXdppS5LXr4a8iVPAo9w8XW6PJCvOYN25IYEDD/exec";
+
 var WA_COMPRAS   = "";                // ← poné acá tu número si querés que el
                                       //   local te mande el reporte directo
 
@@ -278,45 +314,65 @@ var WA_COMPRAS   = "";                // ← poné acá tu número si querés qu
    CATALOGO
 ══════════════════════════════════════════════════════════ */
 var DEFAULT_CATALOG=[
-{id:1,name:"Grapas 24/6",unit:"caja",qty:1,code:null},
-{id:2,name:"Bolsas Basura Verdes",unit:"bulto",qty:1,code:"701"},
-{id:3,name:"Bolsas Basura Negras",unit:"bulto",qty:1,code:"289"},
-{id:4,name:"Cinta Adhesiva",unit:"caja",qty:2,code:"228"},
-{id:5,name:"Servilletas 18x18",unit:"caja",qty:2,code:"133"},
-{id:6,name:"Servilletas 24x24",unit:"caja",qty:1,code:"648"},
-{id:7,name:"Servilletas 33x33",unit:"caja",qty:2,code:"123"},
-{id:8,name:"Servilletas Intercaladas",unit:"caja",qty:1,code:"119"},
-{id:9,name:"Dips GRANDE (Pote 55cc)",unit:"caja",qty:1,code:"94"},
-{id:10,name:"Dips PEQUEÑO (Pote 40cc)",unit:"caja",qty:1,code:"98"},
-{id:11,name:"Portavasos",unit:"caja",qty:1,code:"230"},
-{id:12,name:"Bolsas Delivery PEQUEÑA",unit:"caja",qty:1,code:"865"},
-{id:13,name:"Bolsas FM5 (Tortas)",unit:"caja",qty:1,code:null},
-{id:14,name:"Bolsas FM7",unit:"caja",qty:1,code:"865"},
-{id:15,name:"Bolsas FM8",unit:"caja",qty:1,code:"873"},
-{id:16,name:"Bolsas p/Cachitos",unit:"caja",qty:1,code:"283"},
-{id:17,name:"Bolsas Arranque 20x30",unit:"caja",qty:2,code:"516"},
-{id:18,name:"Bolsas Camiseta 30x40",unit:"caja",qty:1,code:null},
-{id:19,name:"Bolsas Camiseta 40x50",unit:"caja",qty:2,code:"128"},
-{id:20,name:"Bolsas Camiseta 50x60",unit:"caja",qty:1,code:"226"},
-{id:21,name:"Papel Antigrasa",unit:"kg",qty:5,code:"196"},
-{id:22,name:"Rollo Cocina Elegante 200P",unit:"caja",qty:1,code:"122"},
-{id:23,name:"Vasos Polipapel 180ml (Café)",unit:"caja",qty:1,code:null},
-{id:24,name:"Vasos Plásticos 180ml Cristal",unit:"caja",qty:1,code:"526"},
-{id:25,name:"Cucharillas Sunday Cristal",unit:"caja",qty:1,code:"853"},
-{id:26,name:"Rollo Térmico 80mm (Fiscal)",unit:"rollo",qty:5,code:null},
-{id:27,name:"Rollo Térmico 57mm (Posnet)",unit:"rollo",qty:5,code:null},
-{id:28,name:"Guantes Nitrilo L Negros",unit:"caja",qty:1,code:null},
-{id:29,name:"Sorbetes",unit:"caja",qty:1,code:null},
-{id:30,name:"Tapa 63 Interna",unit:"caja",qty:2,code:"95"}
+{id:1,name:"Grapas 24/6",unit:"caja",qty:1,code:null,s:"locales"},
+{id:2,name:"Bolsas Basura Verdes",unit:"bulto",qty:1,code:"701",s:"locales"},
+{id:3,name:"Bolsas Basura Negras",unit:"bulto",qty:1,code:"289",s:"locales"},
+{id:4,name:"Cinta Adhesiva",unit:"caja",qty:2,code:"228",s:"locales"},
+{id:5,name:"Servilletas 18x18",unit:"caja",qty:2,code:"133",s:"locales"},
+{id:6,name:"Servilletas 24x24",unit:"caja",qty:1,code:"648",s:"locales"},
+{id:7,name:"Servilletas 33x33",unit:"caja",qty:2,code:"123",s:"locales"},
+{id:8,name:"Servilletas Intercaladas",unit:"caja",qty:1,code:"119",s:"locales"},
+{id:9,name:"Dips GRANDE (Pote 55cc)",unit:"caja",qty:1,code:"94",s:"locales"},
+{id:10,name:"Dips PEQUEÑO (Pote 40cc)",unit:"caja",qty:1,code:"98",s:"locales"},
+{id:11,name:"Portavasos",unit:"caja",qty:1,code:"230",s:"locales"},
+{id:12,name:"Bolsas Delivery PEQUEÑA",unit:"caja",qty:1,code:"865",s:"locales"},
+{id:13,name:"Bolsas FM5 (Tortas)",unit:"caja",qty:1,code:null,s:"locales"},
+{id:14,name:"Bolsas FM7",unit:"caja",qty:1,code:"865",s:"locales"},
+{id:15,name:"Bolsas FM8",unit:"caja",qty:1,code:"873",s:"locales"},
+{id:16,name:"Bolsas p/Cachitos",unit:"caja",qty:1,code:"283",s:"locales"},
+{id:17,name:"Bolsas Arranque 20x30",unit:"caja",qty:2,code:"516",s:"locales"},
+{id:18,name:"Bolsas Camiseta 30x40",unit:"caja",qty:1,code:null,s:"locales"},
+{id:19,name:"Bolsas Camiseta 40x50",unit:"caja",qty:2,code:"128",s:"locales"},
+{id:20,name:"Bolsas Camiseta 50x60",unit:"caja",qty:1,code:"226",s:"locales"},
+{id:21,name:"Papel Antigrasa",unit:"kg",qty:5,code:"196",s:"locales"},
+{id:22,name:"Rollo Cocina Elegante 200P",unit:"caja",qty:1,code:"122",s:"locales"},
+{id:23,name:"Vasos Polipapel 180ml (Café)",unit:"caja",qty:1,code:null,s:"locales"},
+{id:24,name:"Vasos Plásticos 180ml Cristal",unit:"caja",qty:1,code:"526",s:"locales"},
+{id:25,name:"Cucharillas Sunday Cristal",unit:"caja",qty:1,code:"853",s:"locales"},
+{id:26,name:"Rollo Térmico 80mm (Fiscal)",unit:"rollo",qty:5,code:null,s:"locales"},
+{id:27,name:"Rollo Térmico 57mm (Posnet)",unit:"rollo",qty:5,code:null,s:"locales"},
+{id:28,name:"Guantes Nitrilo L Negros",unit:"caja",qty:1,code:null,s:"locales"},
+{id:29,name:"Sorbetes",unit:"caja",qty:1,code:null,s:"locales"},
+{id:30,name:"Tapa 63 Interna",unit:"caja",qty:2,code:"95",s:"locales"}
 ];
 
-/* Catálogo editable — se guarda en el dispositivo */
+/* ══════════════════════════════════════════════════════════
+   SITIOS
+══════════════════════════════════════════════════════════ */
+var SITES=[
+  {id:"bonpland", n:"Bonpland 1708",       short:"Bonpland",  ico:"🏪", scope:"locales"},
+  {id:"hp1750",   n:"Humberto Primo 1750", short:"H. Primo",  ico:"🏪", scope:"locales"},
+  {id:"fabrica",  n:"Fábrica",             short:"Fábrica",   ico:"🏭", scope:"fabrica"}
+];
+function siteById(id){for(var i=0;i<SITES.length;i++)if(SITES[i].id===id)return SITES[i];return null;}
+
+/* Catálogo editable — se guarda en el dispositivo.
+   Cada producto tiene s: "locales" | "fabrica" | "ambos" */
 function getCatalog(){
   var c=lg("pap_catalog",null);
-  if(!c||!c.length)return DEFAULT_CATALOG.slice();
+  if(!c||!c.length)c=DEFAULT_CATALOG.slice();
+  // migración: productos viejos sin scope → locales
+  var dirty=false;
+  c.forEach(function(p){ if(!p.s){p.s="locales";dirty=true;} });
+  if(dirty&&lg("pap_catalog",null))saveCatalog(c);
   return c;
 }
-function saveCatalog(c){ls("pap_catalog",c);}
+/* productos que corresponden a un sitio */
+function catalogFor(siteId){
+  var st=siteById(siteId); if(!st)return [];
+  return getCatalog().filter(function(p){ return p.s==="ambos"||p.s===st.scope; });
+}
+function saveCatalog(c){ls("pap_catalog",c);cloudPush({key:"catalog",value:c});}
 function resetCatalog(){localStorage.removeItem("pap_catalog");}
 
 var SEED=[
@@ -371,32 +427,111 @@ var MONTHS=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","D
    STORAGE  (local + optional cloud)
 ══════════════════════════════════════════════════════════ */
 var LS={mode:"pap_mode",pin:"pap_pin",unlock:"pap_unlock",inv:"pap_inv",
-packs:"pap_packs",kits:"pap_kits",report:"pap_report",cloud:"pap_cloud"};
+packs:"pap_packs",kits:"pap_kits",reports:"pap_reports_v2",cloud:"pap_cloud",site:"pap_site"};
+
+/* ── reportes por sitio: {bonpland:{...}, hp1750:{...}, fabrica:{...}} ── */
+function loadReports(){
+  var r=lg(LS.reports,null);
+  if(r&&typeof r==="object"&&!r.items)return r;
+  // migración del formato viejo (un solo reporte) → Bonpland
+  var old=lg("pap_report",null);
+  if(old&&old.items){var o={};o.bonpland=old;ls(LS.reports,o);return o;}
+  return {};
+}
+function saveReports(r){ls(LS.reports,r);}
+function getReport(siteId){return loadReports()[siteId]||null;}
+function setReport(siteId,rep){var all=loadReports();all[siteId]=rep;saveReports(all);
+  cloudPush({key:"report_"+siteId,value:rep});return all;}
 
 function lg(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
 function ls(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 
-function cloudCfg(){return lg(LS.cloud,null);}
+/* ══════════════════════════════════════════════════════════
+   SINCRONIZACIÓN (Google Apps Script)
+   Lectura por JSONP · escritura por POST no-cors
+══════════════════════════════════════════════════════════ */
+function syncOn(){ return !!(SYNC_URL&&SYNC_URL.indexOf("http")===0); }
 
-/* JSONBin sync — optional */
-async function cloudPut(data){
-  var c=cloudCfg(); if(!c||!c.bin||!c.key) return false;
-  try{
-    var r=await fetch("https://api.jsonbin.io/v3/b/"+c.bin,{
-      method:"PUT",headers:{"Content-Type":"application/json","X-Master-Key":c.key},
-      body:JSON.stringify(data)});
-    return r.ok;
-  }catch(e){return false;}
+var SYNCST={last:null,busy:false,err:null};
+
+var __cbN=0;
+function jsonp(url,ms){
+  return new Promise(function(res,rej){
+    var cb="__ofcb"+(++__cbN)+"_"+Date.now();
+    var sc=document.createElement("script");
+    var to=setTimeout(function(){done();rej(new Error("timeout"));},ms||15000);
+    function done(){
+      clearTimeout(to);
+      try{delete window[cb];}catch(e){window[cb]=undefined;}
+      if(sc.parentNode)sc.parentNode.removeChild(sc);
+    }
+    window[cb]=function(d){done();res(d);};
+    sc.onerror=function(){done();rej(new Error("red"));};
+    sc.src=url+(url.indexOf("?")<0?"?":"&")+"callback="+cb+"&t="+Date.now();
+    document.head.appendChild(sc);
+  });
 }
-async function cloudGet(){
-  var c=cloudCfg(); if(!c||!c.bin||!c.key) return null;
+
+/* trae TODO desde la nube */
+async function cloudPull(){
+  if(!syncOn())return null;
+  SYNCST.busy=true;SYNCST.err=null;
   try{
-    var r=await fetch("https://api.jsonbin.io/v3/b/"+c.bin+"/latest",{
-      headers:{"X-Master-Key":c.key}});
-    if(!r.ok) return null;
-    var j=await r.json();
-    return j.record||null;
-  }catch(e){return null;}
+    var r=await jsonp(SYNC_URL);
+    SYNCST.busy=false;
+    if(r&&r.ok){SYNCST.last=new Date().toISOString();return r.data||{};}
+    SYNCST.err="respuesta inválida";return null;
+  }catch(e){SYNCST.busy=false;SYNCST.err=e.message;return null;}
+}
+
+/* manda una o varias claves */
+async function cloudPush(entries){
+  if(!syncOn())return false;
+  if(!Array.isArray(entries))entries=[entries];
+  try{
+    await fetch(SYNC_URL,{method:"POST",mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify({entries:entries})});
+    SYNCST.last=new Date().toISOString();
+    return true;
+  }catch(e){SYNCST.err=e.message;return false;}
+}
+
+/* aplica lo que vino de la nube al almacenamiento local */
+function applyCloud(d){
+  if(!d)return false;
+  var changed=false;
+
+  if(d.catalog&&d.catalog.length){ls("pap_catalog",d.catalog);changed=true;}
+  if(d.invoices&&d.invoices.length){ls(LS.inv,d.invoices);changed=true;}
+  if(d.packs){ls(LS.packs,d.packs);changed=true;}
+  if(d.kits){ls(LS.kits,d.kits);changed=true;}
+  if(d.pin){ls(LS.pin,d.pin);changed=true;}
+
+  // reportes: gana el más nuevo de cada lugar
+  var mine=loadReports(), merged={}, any=false;
+  SITES.forEach(function(st){
+    var a=mine[st.id], b=d["report_"+st.id];
+    var pick=a;
+    if(b&&(!a||new Date(b.submittedAt)>new Date(a.submittedAt)))pick=b;
+    if(pick){merged[st.id]=pick;any=true;}
+  });
+  if(any){saveReports(merged);changed=true;}
+  return changed;
+}
+
+/* empuja el estado completo (lo usa Compras al configurar) */
+async function cloudPushAll(){
+  var reps=loadReports();
+  var ent=[
+    {key:"catalog", value:getCatalog()},
+    {key:"invoices",value:getInvoices()},
+    {key:"packs",   value:lg(LS.packs,{})},
+    {key:"kits",    value:lg(LS.kits,[])}
+  ];
+  var pin=lg(LS.pin,null); if(pin)ent.push({key:"pin",value:pin});
+  SITES.forEach(function(st){ if(reps[st.id])ent.push({key:"report_"+st.id,value:reps[st.id]}); });
+  return await cloudPush(ent);
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -433,8 +568,20 @@ function copyTxt(t){
 
 function getInvoices(){
   var v=lg(LS.inv,null);
-  if(!v||!v.length){ls(LS.inv,SEED);return SEED.slice();}
+  if(!v||!v.length){
+    var seed=SEED.map(function(f){var o={};for(var k in f)o[k]=f[k];o.site="bonpland";return o;});
+    ls(LS.inv,seed);return seed;
+  }
+  var dirty=false;
+  v.forEach(function(f){if(!f.site){f.site="bonpland";dirty=true;}});
+  if(dirty)ls(LS.inv,v);
   return v;
+}
+/* facturas filtradas por sitio (null = todas) */
+var IFILTER=null;
+function invFor(siteId){
+  var all=sortedInv();
+  return siteId?all.filter(function(f){return f.site===siteId;}):all;
 }
 function sortedInv(){return getInvoices().slice().sort(function(a,b){return parseD(a.date)-parseD(b.date);});}
 function latestPrices(){var m={};sortedInv().forEach(function(f){
@@ -446,23 +593,27 @@ function unitCost(code){var lp=latestPrices()[code];return lp?lp.price/(packOf(c
 /* ══════════════════════════════════════════════════════════
    REPORT ENCODING (WhatsApp bridge)
 ══════════════════════════════════════════════════════════ */
-function encodeReport(items){
+function encodeReport(siteId,items){
   var parts=items.filter(function(i){return i.status!=="ok";}).map(function(i){
     return i.id+(i.status==="out"?"o":"l")+(i.note?"~"+i.note.replace(/[|~]/g,""):"");
   });
-  return "#OF|"+parts.join("|");
+  return "#OF|"+siteId+"|"+parts.join("|");
 }
 function decodeReport(txt){
   var m=(txt||"").match(/#OF\|([^\n]*)/);
   if(!m) return null;
-  var items=getCatalog().map(function(c){return{id:c.id,name:c.name,unit:c.unit,code:c.code,status:"ok",note:""};});
-  m[1].split("|").filter(Boolean).forEach(function(tok){
+  var toks=m[1].split("|").filter(function(t){return t!=="";});
+  var siteId="bonpland";
+  if(toks.length&&siteById(toks[0])){siteId=toks[0];toks=toks.slice(1);}
+  var items=catalogFor(siteId).map(function(c){
+    return{id:c.id,name:c.name,unit:c.unit,code:c.code,status:"ok",note:""};});
+  toks.forEach(function(tok){
     var mm=tok.match(/^(\d+)([ol])(?:~(.*))?$/);
     if(!mm) return;
     var it=items.find(function(x){return x.id===+mm[1];});
     if(it){it.status=mm[2]==="o"?"out":"low";it.note=mm[3]||"";}
   });
-  return {submittedAt:new Date().toISOString(),reportStatus:"pending",items:items};
+  return {site:siteId,submittedAt:new Date().toISOString(),reportStatus:"pending",items:items};
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -470,9 +621,22 @@ function decodeReport(txt){
 ══════════════════════════════════════════════════════════ */
 var state={mode:null,pending:null};
 
-function boot(){
+async function boot(){
   state.mode=lg(LS.mode,null);
   render();
+  if(syncOn()){
+    var d=await cloudPull();
+    if(applyCloud(d)){ if(state.mode==="local")L.items=null; render(); }
+  }
+}
+/* refrescar a pedido */
+async function refreshSync(){
+  if(!syncOn()){toast("⚠ Sincronización no configurada");return;}
+  toast("Sincronizando…");
+  var d=await cloudPull();
+  if(d){applyCloud(d); if(state.mode==="local")L.items=null;
+    C.loaded=true; render(); toast("✓ Actualizado");}
+  else toast("⚠ No se pudo conectar");
 }
 function go(m){
   if(m==="compras"||m==="analisis"){
@@ -490,7 +654,10 @@ function lockAll(){
 }
 function render(){
   if(state.pending){renderPin();return;}
-  if(state.mode==="local"){renderLocal();return;}
+  if(state.mode==="local"){
+    if(!siteById(lg(LS.site,null))){renderSitePick();return;}
+    renderLocal();return;
+  }
   if(state.mode==="compras"){renderCompras();return;}
   if(state.mode==="analisis"){renderAnalisis();return;}
   renderSelect();
@@ -499,12 +666,37 @@ function render(){
 /* ══════════════════════════════════════════════════════════
    HEADER
 ══════════════════════════════════════════════════════════ */
-function header(sub,locked){
+function header(sub,locked,siteId){
+  var st=siteId?siteById(siteId):null;
   return '<header><span class="logo">ONDA <span>FOOD</span></span>'+
-    '<span class="hsub">'+esc(sub)+'</span><div class="hbtns">'+
+    (st?'<span class="hsite">'+st.ico+' '+esc(st.short)+'</span>'
+       :'<span class="hsub">'+esc(sub)+'</span>')+
+    '<div class="hbtns">'+
     (locked?'<button class="hb" onclick="lockAll()">🔒</button>':'')+
     '<button class="hb" onclick="go(null)">Salir</button></div></header>';
 }
+
+/* ══════════════════════════════════════════════════════════
+   ELEGIR SITIO (modo local)
+══════════════════════════════════════════════════════════ */
+function renderSitePick(){
+  var h='<header style="justify-content:center"><span class="logo" style="font-size:1.1rem">ONDA <span>FOOD</span></span></header>'+
+  '<div class="msel" style="padding-top:34px"><div class="mtitle">'+
+  '<h1 style="font-size:1.6rem">¿Dónde estás?</h1>'+
+  '<p>Elegí tu lugar — se recuerda en este dispositivo</p></div>';
+  SITES.forEach(function(st){
+    var n=catalogFor(st.id).length;
+    h+='<button class="sitecard" onclick="pickSite(\''+st.id+'\')">'+
+    '<span class="sico">'+st.ico+'</span>'+
+    '<div class="sbody"><div class="sname">'+esc(st.n)+'</div>'+
+    '<div class="smeta">'+n+' producto'+(n!==1?"s":"")+' en la lista</div></div>'+
+    '<span class="schev">›</span></button>';
+  });
+  h+='<button class="btn btn-ghost btn-sm" style="margin-top:14px" onclick="go(null)">← Volver</button></div>';
+  $("app").innerHTML=h;
+}
+function pickSite(id){ls(LS.site,id);L.items=null;L.sent=false;render();}
+function changeSite(){localStorage.removeItem(LS.site);L.items=null;L.sent=false;render();}
 
 /* ══════════════════════════════════════════════════════════
    MODE SELECT
@@ -556,7 +748,7 @@ function submitPin(){
     var p2=$("pin2").value;
     if(p1.length<4){toast("⚠ Mínimo 4 dígitos");return;}
     if(p1!==p2){toast("⚠ No coinciden");return;}
-    var hp=pinHash(p1);ls(LS.pin,hp);ls(LS.unlock,hp);
+    var hp=pinHash(p1);ls(LS.pin,hp);ls(LS.unlock,hp);cloudPush({key:"pin",value:hp});
     state.mode=state.pending;state.pending=null;ls(LS.mode,state.mode);
     toast("✓ PIN creado");render();
   }else{
@@ -576,18 +768,48 @@ function submitPin(){
 ══════════════════════════════════════════════════════════ */
 var L={items:null,filter:"all",sent:false,msg:""};
 
+/* Reconstruye la lista del local desde el catálogo actual,
+   conservando lo que ya marcó la persona */
+function syncLocalItems(siteId){
+  var cat=catalogFor(siteId);
+  var prev={};
+  (L.items||[]).forEach(function(i){prev[i.id]={status:i.status,note:i.note};});
+  L.items=cat.map(function(c){
+    var p=prev[c.id]||{};
+    return{id:c.id,name:c.name,unit:c.unit,code:c.code,
+           status:p.status||"ok",note:p.note||""};
+  });
+}
+
 function renderLocal(){
-  if(!L.items)L.items=getCatalog().map(function(c){
-    return{id:c.id,name:c.name,unit:c.unit,code:c.code,status:"ok",note:""};});
+  var siteId=lg(LS.site,null);
+  syncLocalItems(siteId);
   if(L.sent){renderLocalSent();return;}
+
+  if(!L.items.length){
+    $("app").innerHTML=header("",false,siteId)+'<div class="page">'+
+    '<div class="card"><div class="empty"><div class="ico">📋</div>'+
+    'Todavía no hay productos cargados para <b>'+esc(siteById(siteId).n)+'</b>.<br><br>'+
+    'Pedile a Compras que los marque en Análisis → Productos.</div></div>'+
+    (syncOn()
+      ?'<button class="btn btn-black" onclick="refreshSync()">🔄 Buscar actualizaciones</button>'
+      :'<button class="btn btn-black" onclick="importCat()">📥 Pegar código del catálogo</button>')+
+    '<button class="btn btn-ghost btn-sm" style="margin-top:9px" onclick="changeSite()">↻ Cambiar de lugar</button>'+
+    '</div>';
+    return;
+  }
 
   var alerts=L.items.filter(function(i){return i.status!=="ok";}).length;
   var shown=L.filter==="alert"?L.items.filter(function(i){return i.status!=="ok";})
            :L.filter==="ok"?L.items.filter(function(i){return i.status==="ok";}):L.items;
 
-  var html=header("Reporte de stock",false)+'<div class="page">';
-  html+='<div style="text-align:right;margin-bottom:8px">'+
-  '<button class="hb" style="border-color:var(--border);color:var(--muted)" onclick="importCat()">📥 Actualizar lista</button></div>';
+  var html=header("",false,siteId)+'<div class="page">';
+  html+='<div style="display:flex;gap:6px;justify-content:flex-end;margin-bottom:8px">'+
+  '<button class="hb" style="border-color:var(--border);color:var(--muted)" onclick="changeSite()">↻ Cambiar lugar</button>'+
+  (syncOn()
+    ?'<button class="hb" style="border-color:var(--border);color:var(--muted)" onclick="refreshSync()">🔄 Actualizar</button>'
+    :'<button class="hb" style="border-color:var(--border);color:var(--muted)" onclick="importCat()">📥 Actualizar lista</button>')+
+  '</div>';
 
   if(alerts>0)html+='<div class="banner b-warn"><span class="banner-ico">⚠️</span>'+
     '<div><h3>'+alerts+' producto'+(alerts!==1?"s":"")+' marcado'+(alerts!==1?"s":"")+'</h3></div></div>';
@@ -622,36 +844,36 @@ function setSt(id,s){var it=L.items.find(function(x){return x.id===id;});
 function setNote(id,v){var it=L.items.find(function(x){return x.id===id;});if(it)it.note=v;}
 
 async function sendReport(){
+  var siteId=lg(LS.site,null), st=siteById(siteId);
   var alerts=L.items.filter(function(i){return i.status!=="ok";});
   if(!alerts.length){toast("⚠ No marcaste nada");return;}
   var today=new Date().toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"numeric"});
-  var m="📦 *REPORTE STOCK PAPELERÍA*\n_"+today+"_\n\n";
+  var m="📦 *REPORTE STOCK PAPELERÍA*\n"+st.ico+" *"+st.n+"*\n_"+today+"_\n\n";
   alerts.forEach(function(i){
     m+=(i.status==="out"?"❌":"⚠️")+" *"+i.name+"*"+(i.note?" — "+i.note:"")+"\n";
   });
-  m+="\n"+encodeReport(L.items);
+  m+="\n"+encodeReport(siteId,L.items);
   L.msg=m;
 
-  var payload={submittedAt:new Date().toISOString(),reportStatus:"pending",items:L.items};
-  ls(LS.report,payload);
-  await cloudPut(payload);
+  var payload={site:siteId,submittedAt:new Date().toISOString(),reportStatus:"pending",items:L.items};
+  setReport(siteId,payload);
 
   L.sent=true;renderLocal();
 }
 
 function renderLocalSent(){
   var alerts=L.items.filter(function(i){return i.status!=="ok";}).length;
-  var hasCloud=!!cloudCfg();
+  var hasCloud=syncOn();
   var waHref=WA_COMPRAS?("https://wa.me/"+WA_COMPRAS+"?text="+encodeURIComponent(L.msg))
                        :("https://wa.me/?text="+encodeURIComponent(L.msg));
-  $("app").innerHTML=header("Reporte enviado",false)+
+  $("app").innerHTML=header("",false,lg(LS.site,null))+
   '<div class="page" style="max-width:520px">'+
   '<div style="text-align:center;padding:26px 10px 18px">'+
   '<div style="font-size:54px;margin-bottom:12px">✅</div>'+
   '<h2 class="hd" style="font-size:1.4rem;font-weight:800;color:var(--accentD)">¡Reporte listo!</h2>'+
   '<p style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.55">'+
   alerts+' producto'+(alerts!==1?"s":"")+' marcado'+(alerts!==1?"s":"")+'.'+
-  (hasCloud?'<br>Ya se sincronizó con Compras.':'<br>Mandalo por WhatsApp para que llegue a Compras.')+
+  (hasCloud?'<br>Ya le llegó a Compras automáticamente.':'<br>Mandalo por WhatsApp para que llegue a Compras.')+
   '</p></div>'+
   (!hasCloud?
     '<a class="btn btn-wa" href="'+waHref+'" target="_blank" rel="noopener">↗ Enviar por WhatsApp</a>'+
@@ -666,15 +888,15 @@ function renderLocalSent(){
 /* ══════════════════════════════════════════════════════════
    COMPRAS MODE
 ══════════════════════════════════════════════════════════ */
-var C={report:null,qtys:{},filter:"alert",screen:"review",msg:"",loaded:false};
+var C={site:null,report:null,qtys:{},filter:"alert",screen:"review",msg:"",loaded:false};
 
 async function renderCompras(){
   if(!C.loaded){
     C.loaded=true;
-    var cloud=await cloudGet();
-    C.report=cloud||lg(LS.report,null);
-    if(C.report)initQtys();
+    if(syncOn()){var d=await cloudPull();applyCloud(d);}
   }
+  if(!C.site){renderComprasSites();return;}
+  C.report=getReport(C.site);
   if(C.screen==="message"){renderComprasMsg();return;}
   if(C.screen==="paste"){renderComprasPaste();return;}
 
@@ -686,13 +908,15 @@ async function renderCompras(){
   var total=toOrder.reduce(function(s,i){var p=lp[i.code];return s+(p?p.price*(C.qtys[i.id]||0):0);},0);
   var known=toOrder.filter(function(i){return lp[i.code];}).length;
 
-  var html=header("Compras · Pedido",true)+'<div class="page">';
+  var stc=siteById(C.site);
+  var html=header("",true,C.site)+'<div class="page">'+
+  '<button class="btn btn-ghost btn-sm" style="width:auto;padding:6px 12px;margin-bottom:11px" onclick="backToSites()">← Todos los lugares</button>';
 
   if(!C.report){
     html+='<div class="card"><div class="empty"><div class="ico">📭</div>'+
-    'Todavía no hay ningún reporte del local.<br>Pedile que te lo mande, o pegalo acá abajo.</div></div>'+
-    '<button class="btn btn-black" onclick="C.screen=\'paste\';renderCompras()">📥 Pegar reporte del local</button>'+
-    (cloudCfg()?'<button class="btn btn-ghost" style="margin-top:9px" onclick="C.loaded=false;renderCompras()">🔄 Buscar en la nube</button>':'')+
+    '<b>'+esc(stc.n)+'</b> todavía no mandó ningún reporte.<br>Pedíselo, o pegá el mensaje acá abajo.</div></div>'+
+    '<button class="btn btn-black" onclick="C.screen=\'paste\';renderCompras()">📥 Pegar reporte de WhatsApp</button>'+
+    (syncOn()?'<button class="btn btn-ghost" style="margin-top:9px" onclick="refreshSync()">🔄 Buscar en la nube</button>':'')+
     '<div class="spacer"></div></div>';
     $("app").innerHTML=html;return;
   }
@@ -700,10 +924,10 @@ async function renderCompras(){
   var bc=C.report.reportStatus==="ordered"?"b-ok":alerts.length?"b-warn":"b-ok";
   var bi=C.report.reportStatus==="ordered"?"✅":alerts.length?"⚠️":"✅";
   var bt=C.report.reportStatus==="ordered"?"Pedido ya enviado"
-        :alerts.length?(alerts.length+" alerta"+(alerts.length!==1?"s":"")+" del local"):"Todo en stock";
+        :alerts.length?(alerts.length+" alerta"+(alerts.length!==1?"s":"")):"Todo en stock";
 
   html+='<button class="btn btn-black" style="margin-bottom:11px" onclick="C.screen=\'paste\';renderCompras()">'+
-  '📥 Cargar reporte del local</button>';
+  '📥 Cargar reporte nuevo de '+esc(stc.short)+'</button>';
 
   html+='<div class="banner '+bc+'"><span class="banner-ico">'+bi+'</span>'+
   '<div style="flex:1"><h3>'+bt+'</h3><p>'+timeAgo(C.report.submittedAt)+'</p></div>'+
@@ -748,6 +972,47 @@ async function renderCompras(){
 
   $("app").innerHTML=html;
 }
+function renderComprasSites(){
+  var reps=loadReports();
+  var pend=0;
+  var h=header("Compras · Pedidos",true)+'<div class="page">';
+
+  SITES.forEach(function(st){ var r=reps[st.id];
+    if(r&&r.reportStatus!=="ordered"&&r.items.filter(function(i){return i.status!=="ok";}).length)pend++; });
+
+  h+='<div class="banner '+(pend?"b-warn":"b-ok")+'"><span class="banner-ico">'+(pend?"⚠️":"✅")+'</span>'+
+  '<div style="flex:1"><h3>'+(pend?pend+" lugar"+(pend!==1?"es":"")+" con pedido pendiente":"Nada pendiente")+'</h3>'+
+  '<p>Tocá un lugar para armar su pedido</p></div>'+
+  '<button class="hb" style="border-color:var(--border);color:var(--muted)" onclick="refreshSync()">🔄</button></div>';
+
+  SITES.forEach(function(st){
+    var r=reps[st.id];
+    var cls="sitecard", pill, meta;
+    if(!r){ cls+=" none"; pill='<span class="spill na">sin reporte</span>'; meta="Nunca reportó"; }
+    else{
+      var al=r.items.filter(function(i){return i.status!=="ok";}).length;
+      meta=timeAgo(r.submittedAt);
+      if(r.reportStatus==="ordered"){cls+=" done";pill='<span class="spill ok">✓ pedido enviado</span>';}
+      else if(al){cls+=" pend";pill='<span class="spill warn">'+al+' alerta'+(al!==1?"s":"")+'</span>';}
+      else {cls+=" done";pill='<span class="spill ok">todo en stock</span>';}
+    }
+    h+='<button class="'+cls+'" onclick="openSite(\''+st.id+'\')">'+
+    '<span class="sico">'+st.ico+'</span>'+
+    '<div class="sbody"><div class="sname">'+esc(st.n)+'</div>'+
+    '<div class="smeta">'+meta+'</div>'+pill+'</div>'+
+    '<span class="schev">›</span></button>';
+  });
+
+  h+='<button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="C.site=SITES[0].id;C.screen=\'paste\';renderCompras()">'+
+  '📥 Pegar un reporte de WhatsApp</button>'+
+  '<div class="spacer" style="height:30px"></div></div>';
+  $("app").innerHTML=h;
+}
+function openSite(id){C.site=id;C.screen="review";C.filter="alert";C.report=getReport(id);
+  if(C.report)initQtys(); else C.qtys={};
+  renderCompras();}
+function backToSites(){C.site=null;C.screen="review";renderCompras();}
+
 function initQtys(){
   C.qtys={};
   (C.report.items||[]).forEach(function(it){
@@ -762,22 +1027,23 @@ function renderComprasPaste(){
   $("app").innerHTML=header("Pegar reporte",true)+'<div class="page" style="max-width:520px">'+
   '<div class="banner b-info"><p><b>Pegá el mensaje completo</b> que te mandó el local por WhatsApp '+
   '(mantené apretado sobre el mensaje → Copiar → pegá acá).<br><br>'+
-  'Importante: tiene que incluir la última línea que empieza con <b>#OF|</b> — ahí van los datos.</p></div>'+
+  'El lugar se detecta solo del código <b>#OF|</b> que va al final del mensaje.</p></div>'+
   '<textarea class="pastebox" id="pasteIn" placeholder="Pegá el reporte completo acá…"></textarea>'+
   '<button class="btn btn-black" style="margin-top:11px" onclick="doPaste()">✓ Cargar reporte</button>'+
   '<button class="btn btn-ghost" style="margin-top:9px" onclick="C.screen=\'review\';renderCompras()">← Volver</button>'+
   '<div class="spacer"></div></div>';
   setTimeout(function(){$("pasteIn").focus();},100);
 }
-function doPaste(){
+async function doPaste(){
   var txt=$("pasteIn").value||"";
   var r=decodeReport(txt);
   if(!r){
     toast("⚠ Falta el código #OF| del final del mensaje");
     return;
   }
-  C.report=r;ls(LS.report,r);initQtys();C.screen="review";
-  toast("✓ Reporte cargado");renderCompras();
+  setReport(r.site,r);
+  C.site=r.site;C.report=r;initQtys();C.screen="review";
+  toast("✓ Reporte de "+siteById(r.site).short+" cargado");renderCompras();
 }
 
 function genPedido(){
@@ -785,9 +1051,11 @@ function genPedido(){
   var toOrder=(C.report.items||[]).filter(function(i){return (C.qtys[i.id]||0)>0;});
   if(!toOrder.length){toast("⚠ Ninguna cantidad");return;}
   var today=new Date().toLocaleDateString("es-AR",{day:"2-digit",month:"2-digit",year:"numeric"});
-  var m="📦 *PEDIDO PAPELERÍA*\n_Onda Food SRL — "+today+"_\n\n";
+  var st=siteById(C.site);
+  var m="📦 *PEDIDO PAPELERÍA*\n"+st.ico+" *"+st.n+"*\n_Onda Food SRL — "+today+"_\n\n";
   toOrder.forEach(function(i){m+="▪️ *"+i.name+":* "+C.qtys[i.id]+" "+i.unit+"\n";});
-  m+="\n_Por favor confirmar disponibilidad y precio. Muchas gracias!_ 🙏";
+  m+="\n_Facturar y entregar a nombre de "+st.n+"._\n";
+  m+="_Por favor confirmar disponibilidad y precio. Muchas gracias!_ 🙏";
   C.msg=m;C.screen="message";renderCompras();
 }
 
@@ -796,7 +1064,7 @@ function renderComprasMsg(){
   var toOrder=(C.report.items||[]).filter(function(i){return (C.qtys[i.id]||0)>0;});
   var total=toOrder.reduce(function(s,i){var p=lp[i.code];return s+(p?p.price*C.qtys[i.id]:0);},0);
   var known=toOrder.filter(function(i){return lp[i.code];}).length;
-  $("app").innerHTML=header("Pedido listo",true)+'<div class="page" style="max-width:560px">'+
+  $("app").innerHTML=header("Pedido listo",true,C.site)+'<div class="page" style="max-width:560px">'+
   '<button class="btn btn-ghost btn-sm" style="width:auto;padding:7px 13px;margin-bottom:12px" onclick="C.screen=\'review\';renderCompras()">← Volver a ajustar</button>'+
   (known?'<div class="totbar"><div><div class="lbl">Costo estimado (sin IVA)</div>'+
    '<div class="sub">'+known+' de '+toOrder.length+' con precio conocido</div></div>'+
@@ -810,7 +1078,7 @@ function renderComprasMsg(){
 }
 async function markOrdered(){
   C.report.reportStatus="ordered";C.report.orderedAt=new Date().toISOString();
-  ls(LS.report,C.report);await cloudPut(C.report);
+  setReport(C.site,C.report);
   C.screen="review";toast("✓ Marcado como enviado");renderCompras();
 }
 
@@ -818,7 +1086,7 @@ async function markOrdered(){
    ANALISIS MODE
 ══════════════════════════════════════════════════════════ */
 var A={tab:"resumen",chart1:null,chart2:null,inv:null,kb:null,
-       b64:null,mime:null,prev:null,rvDate:"",rvId:"",rvRows:[]};
+       b64:null,mime:null,prev:null,rvDate:"",rvId:"",rvRows:[],rvSite:"bonpland"};
 
 function renderAnalisis(){
   var html=header("Análisis y costos",true)+
@@ -840,7 +1108,7 @@ function renderAnalisis(){
 }
 
 function tabResumen(){
-  var inv=sortedInv(),lp=latestPrices();
+  var inv=invFor(IFILTER),lp=latestPrices();
   var totalSpend=inv.reduce(function(s,f){return s+f.subtotal;},0);
   var avg=null;
   if(inv.length>=2){
@@ -852,7 +1120,24 @@ function tabResumen(){
       avg=ch.reduce(function(s,c){return s+c;},0)/ch.length;
     }
   }
-  var h='<button class="btn btn-black" style="margin-bottom:12px" onclick="openInv()">📄 Cargar nueva factura</button>'+
+  var all=sortedInv();
+  var h='<button class="btn btn-black" style="margin-bottom:12px" onclick="openInv()">📄 Cargar nueva factura</button>';
+
+  // filtro por sitio
+  h+='<div class="pills">'+
+  '<button class="pill'+(IFILTER===null?" on":"")+'" onclick="IFILTER=null;renderAnalisis()">Todos ('+all.length+')</button>'+
+  SITES.map(function(st){
+    var n=all.filter(function(f){return f.site===st.id;}).length;
+    return '<button class="pill'+(IFILTER===st.id?" on":"")+'" onclick="IFILTER=\''+st.id+'\';renderAnalisis()">'+
+      st.ico+' '+esc(st.short)+' ('+n+')</button>';
+  }).join("")+'</div>';
+
+  if(!inv.length){
+    return h+'<div class="card"><div class="empty"><div class="ico">📄</div>'+
+    'No hay facturas cargadas para este lugar todavía.</div></div>';
+  }
+
+  h+=''+
   '<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px">'+
   '<div class="card" style="background:var(--black);margin:0;border-top:3px solid var(--accent)">'+
   '<div class="lbl hd" style="font-size:.6rem;color:#666;letter-spacing:.14em">Gasto total · '+inv.length+' fact.</div>'+
@@ -868,18 +1153,34 @@ function tabResumen(){
   '<div style="height:200px"><canvas id="ch1"></canvas></div></div>'+
   '<div class="card"><div class="ctitle">Gasto por factura</div>'+
   '<div style="height:160px"><canvas id="ch2"></canvas></div></div>'+
-  '<div class="card"><div class="ctitle">Facturas cargadas</div>';
+  '<div class="card"><div class="ctitle">Gasto por lugar</div>'+
+  (function(){
+    var byS=SITES.map(function(st){
+      var fs=all.filter(function(f){return f.site===st.id;});
+      return {st:st,n:fs.length,tot:fs.reduce(function(a,f){return a+f.subtotal;},0)};
+    });
+    var mx=Math.max.apply(null,byS.map(function(x){return x.tot;}).concat([1]));
+    return byS.map(function(x){
+      return '<div class="top-item" style="margin-bottom:9px">'+
+      '<span style="font-size:15px;width:20px;flex-shrink:0">'+x.st.ico+'</span>'+
+      '<span class="top-name">'+esc(x.st.short)+'<span style="color:var(--muted);font-weight:400"> · '+x.n+' fact.</span></span>'+
+      '<div class="top-bar-wrap"><div class="top-bar" style="width:'+(x.tot/mx*100).toFixed(0)+'%"></div></div>'+
+      '<span class="top-val">'+bigMoney(x.tot)+'</span></div>';
+    }).join("");
+  })()+'</div>'+
+  '<div class="card"><div class="ctitle">Facturas cargadas'+(IFILTER?" · "+esc(siteById(IFILTER).short):"")+'</div>';
   inv.forEach(function(f){
     h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 11px;background:var(--bg);border-radius:8px;margin-bottom:6px">'+
     '<div><div class="hd" style="font-size:.72rem;color:var(--muted)">'+esc(f.date)+'</div>'+
-    '<div style="font-size:10px;color:var(--muted);opacity:.7;margin-top:1px">'+esc(f.id)+' · '+f.items.length+' prod.</div></div>'+
+    '<div style="font-size:10px;color:var(--muted);opacity:.7;margin-top:1px">'+esc(f.id)+' · '+f.items.length+' prod.</div>'+
+    '<span class="sitetag" style="margin-top:3px">'+(siteById(f.site)?siteById(f.site).ico+" "+esc(siteById(f.site).short):"—")+'</span></div>'+
     '<div class="hd" style="font-size:1rem;font-weight:800;color:var(--accentD)">'+bigMoney(f.total)+'</div></div>';
   });
   return h+'</div>';
 }
 
 function drawCharts(){
-  var inv=sortedInv(),lp=latestPrices();
+  var inv=invFor(IFILTER),lp=latestPrices();
   var cnt={};inv.forEach(function(f){f.items.forEach(function(it){cnt[it.code]=(cnt[it.code]||0)+1;});});
   var rec=Object.keys(cnt).filter(function(c){return cnt[c]>=2;}).slice(0,6);
   var labels=inv.map(function(f){return f.label;});
@@ -905,16 +1206,40 @@ function drawCharts(){
                  callback:function(v){return "$"+(v/1000).toFixed(0)+"k";}}}}}});
 }
 
+var PFILTER="todos";
 function tabProductos(){
   var cat=getCatalog(),lp=latestPrices();
   var opts=Object.keys(lp).map(function(k){return lp[k];})
     .sort(function(a,b){return a.name.localeCompare(b.name);});
 
-  var h='<div class="banner b-info"><p>📝 Editá los nombres tal como los dice el local. '+
-  'El <b>producto de factura</b> vinculado es el que trae el precio al pedido.</p></div>'+
-  '<button class="btn btn-black" style="margin-bottom:12px" onclick="addProd()">＋ Agregar producto</button>';
+  var nLoc=cat.filter(function(x){return x.s!=="fabrica";}).length;
+  var nFab=cat.filter(function(x){return x.s!=="locales";}).length;
 
-  cat.forEach(function(p,i){
+  var h='<div class="banner b-info"><p>📝 Marcá <b>dónde se usa</b> cada producto. '+
+  'Los dos locales comparten la misma lista; la fábrica tiene la suya.<br>'+
+  'El <b>producto de factura</b> vinculado es el que trae el precio al pedido.</p></div>';
+
+  h+='<div class="pills">'+
+  [['todos','Todos ('+cat.length+')'],
+   ['locales','🏪 Locales ('+nLoc+')'],
+   ['fabrica','🏭 Fábrica ('+nFab+')']].map(function(o){
+    return '<button class="pill'+(PFILTER===o[0]?" on":"")+'" onclick="PFILTER=\''+o[0]+'\';renderAnalisis()">'+o[1]+'</button>';
+  }).join("")+'</div>';
+
+  h+='<button class="btn btn-black" style="margin-bottom:4px" onclick="addProd()">＋ Agregar producto'+
+  (PFILTER==="fabrica"?" en 🏭 Fábrica":" en 🏪 Locales")+'</button>'+
+  '<p style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px">'+
+  (PFILTER==="fabrica"?'Se agrega marcado como Fábrica'
+    :'Se agrega marcado como Locales — para Fábrica, filtrá primero por 🏭')+'</p>';
+
+  var shown=PFILTER==="todos"?cat
+    :PFILTER==="locales"?cat.filter(function(x){return x.s!=="fabrica";})
+    :cat.filter(function(x){return x.s!=="locales";});
+
+  if(!shown.length)h+='<div class="card"><div class="empty"><div class="ico">📋</div>'+
+    'Ningún producto marcado para acá todavía.<br>Cambiá el "¿Dónde se usa?" de los que correspondan,<br>o agregá uno nuevo.</div></div>';
+
+  shown.forEach(function(p,i){
     var lnk=p.code&&lp[p.code];
     h+='<div class="card" style="padding:12px">'+
     '<div class="fg" style="margin-bottom:8px"><label class="flbl">Nombre</label>'+
@@ -925,6 +1250,13 @@ function tabProductos(){
       '<div class="fg" style="width:88px"><label class="flbl">Cant. sugerida</label>'+
       '<input class="finp" type="number" min="1" value="'+p.qty+'" onchange="editProd('+p.id+',\'qty\',this.value)"></div>'+
     '</div>'+
+    '<div class="fg" style="margin-bottom:8px"><label class="flbl">¿Dónde se usa?</label>'+
+    '<div class="scopebtns">'+
+      ['locales|🏪 Locales','fabrica|🏭 Fábrica','ambos|Los dos'].map(function(o){
+        var q=o.split("|");
+        return '<button class="scb'+(p.s===q[0]?" on":"")+'" onclick="editProd('+p.id+',\'s\',\''+q[0]+'\')">'+q[1]+'</button>';
+      }).join("")+
+    '</div></div>'+
     '<div class="fg" style="margin-bottom:8px"><label class="flbl">Producto de factura (para el precio)</label>'+
     '<select class="finp" onchange="editProd('+p.id+',\'code\',this.value)">'+
       '<option value="">— sin vincular —</option>'+
@@ -951,18 +1283,23 @@ function editProd(id,field,val){
   var p=cat.find(function(x){return x.id===id;});
   if(!p)return;
   if(field==="qty")p.qty=Math.max(1,parseInt(val)||1);
+  else if(field==="s")p.s=val;
   else if(field==="code")p.code=val||null;
   else if(field==="name"){var v=(val||"").trim();if(!v){toast("⚠ Nombre vacío");renderAnalisis();return;}p.name=v;}
   else if(field==="unit")p.unit=(val||"").trim()||"unid";
   saveCatalog(cat);
-  if(field==="name"||field==="code")renderAnalisis();
+  if(field==="name"||field==="code"||field==="s")renderAnalisis();
   else toast("✓ Guardado");
 }
 function addProd(){
   var cat=getCatalog();
   var maxId=cat.reduce(function(m,p){return Math.max(m,p.id);},0);
-  cat.push({id:maxId+1,name:"Producto nuevo",unit:"caja",qty:1,code:null});
-  saveCatalog(cat);toast("✓ Agregado — editá el nombre");renderAnalisis();
+  var sc=PFILTER==="fabrica"?"fabrica":"locales";
+  cat.push({id:maxId+1,name:"Producto nuevo",unit:"caja",qty:1,code:null,s:sc});
+  saveCatalog(cat);
+  PFILTER=sc;
+  toast(sc==="fabrica"?"✓ Agregado en 🏭 Fábrica":"✓ Agregado en 🏪 Locales");
+  renderAnalisis();
 }
 function delProd(id){
   var cat=getCatalog();
@@ -1010,7 +1347,8 @@ function tabCostos(){
   });
   return h+'</tbody></table></div></div>';
 }
-function setPack(code,v){var p=lg(LS.packs,{});p[code]=Math.max(1,parseInt(v)||1);ls(LS.packs,p);renderAnalisis();}
+function setPack(code,v){var p=lg(LS.packs,{});p[code]=Math.max(1,parseInt(v)||1);ls(LS.packs,p);
+  cloudPush({key:"packs",value:p});renderAnalisis();}
 
 function tabArmados(){
   var kits=lg(LS.kits,[]),lp=latestPrices();
@@ -1035,31 +1373,51 @@ function tabArmados(){
   });
   return h;
 }
-function delKit(id){ls(LS.kits,lg(LS.kits,[]).filter(function(k){return k.id!==id;}));
+function delKit(id){var kk=lg(LS.kits,[]).filter(function(k){return k.id!==id;});
+  ls(LS.kits,kk);cloudPush({key:"kits",value:kk});
   toast("Eliminado");renderAnalisis();}
 
 function tabConfig(){
-  var c=cloudCfg()||{bin:"",key:""};
-  return '<div class="banner b-info"><p><b>Sincronización automática (opcional).</b><br>'+
-  'Sin esto, el local te manda el reporte por WhatsApp y vos lo pegás. Funciona igual, solo que manual.<br><br>'+
-  'Para automatizarlo: creá una cuenta gratis en <b>jsonbin.io</b>, hacé un bin nuevo y pegá acá los datos.</p></div>'+
-  '<div class="card"><div class="ctitle">JSONBin</div>'+
-  '<div class="fg" style="margin-bottom:10px"><label class="flbl">Bin ID</label>'+
-  '<input class="finp" id="cfgBin" value="'+esc(c.bin)+'" placeholder="65a1b2c3d4e5f6..."></div>'+
-  '<div class="fg" style="margin-bottom:12px"><label class="flbl">Master Key</label>'+
-  '<input class="finp" id="cfgKey" type="password" value="'+esc(c.key)+'" placeholder="$2a$10$..."></div>'+
-  '<button class="btn btn-accent btn-sm" onclick="saveCloud()">✓ Guardar</button>'+
-  (c.bin?'<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="clearCloud()">Desactivar sync</button>':'')+
+  var on=syncOn();
+  var h='';
+
+  if(on){
+    h+='<div class="banner b-ok"><span class="banner-ico">🔄</span>'+
+    '<div style="flex:1"><h3>Sincronización activa</h3>'+
+    '<p>'+(SYNCST.last?"Última vez: "+timeAgo(SYNCST.last):"Todavía sin sincronizar")+
+    (SYNCST.err?' · <span style="color:var(--red)">'+esc(SYNCST.err)+'</span>':'')+'</p></div></div>'+
+    '<div class="card"><div class="ctitle">Estado</div>'+
+    '<p style="font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:11px">'+
+    'Los 3 lugares comparten catálogo, reportes, facturas, packs y armados. '+
+    'Cada cambio se manda solo; no hay que configurar nada en cada dispositivo.</p>'+
+    '<button class="btn btn-accent btn-sm" onclick="refreshSync()">🔄 Traer cambios ahora</button>'+
+    '<button class="btn btn-dark btn-sm" style="margin-top:8px" onclick="pushAllNow()">⬆ Subir todo lo de este dispositivo</button>'+
+    '</div>';
+  } else {
+    h+='<div class="banner b-info"><p><b>Sincronización apagada.</b><br>'+
+    'Ahora mismo cada dispositivo guarda lo suyo y el circuito va por WhatsApp.<br><br>'+
+    'Para que todo se actualice solo, seguí los pasos del archivo <b>Apps-Script.gs</b> '+
+    'y pegá la URL en la variable <b>SYNC_URL</b> arriba de todo del index.html.</p></div>';
+  }
+
+  h+='<div class="card"><div class="ctitle">Catálogo manual</div>'+
+  '<p style="font-size:11.5px;color:var(--muted);line-height:1.5;margin-bottom:10px">'+
+  (on?'Con la sincronización activa no hace falta, pero sirve como respaldo.'
+     :'Copiá el código y pegalo en los otros dispositivos.')+'</p>'+
+  '<button class="btn btn-dark btn-sm" onclick="exportCat()">📋 Copiar código del catálogo</button>'+
+  '<button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="importCat()">📥 Importar código</button>'+
   '</div>'+
   '<div class="card"><div class="ctitle">PIN de acceso</div>'+
   '<button class="btn btn-ghost btn-sm" onclick="resetPin()">Cambiar PIN</button></div>';
+  return h;
 }
-function saveCloud(){
-  var bin=$("cfgBin").value.trim(),key=$("cfgKey").value.trim();
-  if(!bin||!key){toast("⚠ Completá los dos campos");return;}
-  ls(LS.cloud,{bin:bin,key:key});toast("✓ Sync activada");renderAnalisis();
+async function pushAllNow(){
+  if(!syncOn()){toast("⚠ Sincronización no configurada");return;}
+  toast("Subiendo…");
+  var ok=await cloudPushAll();
+  toast(ok?"✓ Todo subido":"⚠ No se pudo subir");
+  renderAnalisis();
 }
-function clearCloud(){localStorage.removeItem(LS.cloud);toast("Sync desactivada");renderAnalisis();}
 function resetPin(){
   if(!confirm("¿Borrar el PIN actual? Vas a tener que crear uno nuevo."))return;
   localStorage.removeItem(LS.pin);localStorage.removeItem(LS.unlock);
@@ -1096,6 +1454,10 @@ function modalInv(){
     body='<div class="fgrid">'+
     '<div class="fg"><label class="flbl">Fecha</label><input class="finp" id="rvDate" value="'+esc(A.rvDate)+'" placeholder="DD/MM/YYYY"></div>'+
     '<div class="fg"><label class="flbl">N° factura</label><input class="finp" id="rvId" value="'+esc(A.rvId)+'" placeholder="FAC A0002-…"></div>'+
+    '<div class="fg full"><label class="flbl">¿De qué lugar es esta factura?</label>'+
+    '<select class="finp" id="rvSite">'+
+      SITES.map(function(st){return '<option value="'+st.id+'"'+(A.rvSite===st.id?" selected":"")+'>'+st.ico+' '+esc(st.n)+'</option>';}).join("")+
+    '</select></div>'+
     '</div><div class="flbl" style="margin-bottom:7px">Productos — revisá y corregí</div>'+
     '<div style="max-height:270px;overflow-y:auto;margin-bottom:10px" id="rvBody">';
     A.rvRows.forEach(function(r,i){
@@ -1148,6 +1510,7 @@ async function analyzeInv(){
 }
 function saveInv(){
   var date=$("rvDate").value.trim(),id=$("rvId").value.trim();
+  var siteEl=$("rvSite"), site=siteEl?siteEl.value:"bonpland";
   if(!date){toast("⚠ Falta la fecha");return;}
   var items=A.rvRows.filter(function(r){return (r.name||"").trim();}).map(function(r){
     return{code:(r.code||"").trim()||("X"+Math.random().toString(36).slice(2,6)),
@@ -1156,9 +1519,9 @@ function saveInv(){
   if(!items.length){toast("⚠ Agregá productos");return;}
   var sub=items.reduce(function(s,i){return s+i.qty*i.price;},0);
   var inv=getInvoices();
-  inv.push({id:id||("MAN-"+Date.now()),date:date,label:dateLabel(date),
+  inv.push({id:id||("MAN-"+Date.now()),date:date,label:dateLabel(date),site:site,
     subtotal:Math.round(sub),total:Math.round(sub*1.21),items:items});
-  ls(LS.inv,inv);closeInv();toast("✓ Factura agregada");
+  ls(LS.inv,inv);cloudPush({key:"invoices",value:inv});closeInv();toast("✓ Factura agregada");
 }
 
 /* ── KIT MODAL ── */
@@ -1207,7 +1570,7 @@ function saveKit(){
   var kits=lg(LS.kits,[]);
   if(A.kb.id)kits=kits.map(function(k){return k.id===A.kb.id?{id:A.kb.id,name:A.kb.name,items:A.kb.items}:k;});
   else kits.push({id:Date.now(),name:A.kb.name,items:A.kb.items});
-  ls(LS.kits,kits);A.kb=null;toast("✓ Guardado");renderAnalisis();
+  ls(LS.kits,kits);cloudPush({key:"kits",value:kits});A.kb=null;toast("✓ Guardado");renderAnalisis();
 }
 
 /* GO */
